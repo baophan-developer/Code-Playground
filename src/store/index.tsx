@@ -1,3 +1,4 @@
+import { Extension } from '@uiw/react-codemirror';
 import {
     createContext,
     PropsWithChildren,
@@ -9,18 +10,24 @@ import {
 
 type TypeStore = {
     state: {
-        theme: string;
+        theme: Extension | 'light' | 'dark' | 'none' | undefined;
+        code: string;
     };
     actions: {
-        onChangeTheme: (theme: string) => void;
+        onChangeTheme: (
+            theme: Extension | 'light' | 'dark' | 'none' | undefined
+        ) => void;
+        onChangeCode: (value: string) => void;
     };
 };
 const defaultStore: TypeStore = {
     state: {
-        theme: 'theme',
+        theme: 'light',
+        code: '// Enter your code...',
     },
     actions: {
         onChangeTheme: () => null,
+        onChangeCode: () => null,
     },
 };
 const StoreContext = createContext<TypeStore>(defaultStore);
@@ -32,8 +39,15 @@ function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
     const { children } = props;
     const [state, setState] = useState<TypeStore['state']>(defaultStore.state);
 
-    const handleChangeTheme = useCallback((theme: string) => {
-        setState((prev) => ({ ...prev, theme }));
+    const handleChangeTheme = useCallback(
+        (theme: Extension | 'light' | 'dark' | 'none' | undefined) => {
+            setState((prev) => ({ ...prev, theme }));
+        },
+        []
+    );
+
+    const handleChangeCode = useCallback((code: string) => {
+        setState((prev) => ({ ...prev, code }));
     }, []);
 
     const result = useMemo<TypeStore>(
@@ -41,9 +55,10 @@ function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
             state,
             actions: {
                 onChangeTheme: handleChangeTheme,
+                onChangeCode: handleChangeCode,
             },
         }),
-        []
+        [state]
     );
 
     return (
