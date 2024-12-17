@@ -21,6 +21,7 @@ export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
 
     const handleChangeTheme = useCallback(
         (theme: Extension | 'light' | 'dark' | 'none' | undefined) => {
+            localStorage.setItem('theme', JSON.stringify(theme));
             setState((prev) => ({ ...prev, theme }));
         },
         []
@@ -50,8 +51,13 @@ export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
     useEffect(() => {
         if (firstMount.current) {
             const code = localStorage.getItem('code');
-            if (code) {
-                setState((prev) => ({ ...prev, code }));
+            const theme = localStorage.getItem('theme');
+            if (code && theme) {
+                setState((prev) => ({
+                    ...prev,
+                    code,
+                    theme: JSON.parse(theme),
+                }));
             }
             firstMount.current = false;
         }
