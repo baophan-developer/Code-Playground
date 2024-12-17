@@ -52,13 +52,13 @@ export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
         if (firstMount.current) {
             const code = localStorage.getItem('code');
             const theme = localStorage.getItem('theme');
-            if (code && theme) {
-                setState((prev) => ({
-                    ...prev,
-                    code,
-                    theme: JSON.parse(theme),
-                }));
-            }
+
+            setState((prev) => ({
+                ...prev,
+                code: code ? code : defaultStore.state.code,
+                theme: theme ? JSON.parse(theme) : defaultStore.state.theme,
+            }));
+
             firstMount.current = false;
         }
     }, []);
