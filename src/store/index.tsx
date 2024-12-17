@@ -1,5 +1,12 @@
 import { Extension } from '@uiw/react-codemirror';
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import {
+    PropsWithChildren,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { defaultStore } from '../constant';
 import { TypeStore } from '../types';
 import StoreContext from '../context/StoreContext';
@@ -10,6 +17,7 @@ type TypeStoreProvider = {
 export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
     const { children } = props;
     const [state, setState] = useState<TypeStore['state']>(defaultStore.state);
+    const firstMount = useRef<boolean>(true);
 
     const handleChangeTheme = useCallback(
         (theme: Extension | 'light' | 'dark' | 'none' | undefined) => {
@@ -19,6 +27,7 @@ export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
     );
 
     const handleChangeCode = useCallback((code: string) => {
+        localStorage.setItem('code', code);
         setState((prev) => ({ ...prev, code }));
     }, []);
 
@@ -37,6 +46,16 @@ export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
         }),
         [handleChangeCode, handleChangeTheme, hanldeUpdateResult, state]
     );
+
+    useEffect(() => {
+        if (firstMount.current) {
+            const code = localStorage.getItem('code');
+            if (code) {
+                setState((prev) => ({ ...prev, code }));
+            }
+            firstMount.current = false;
+        }
+    }, []);
 
     return (
         <StoreContext.Provider value={result}>{children}</StoreContext.Provider>
