@@ -1,9 +1,9 @@
 import { javascript } from '@codemirror/lang-javascript';
-import ReactCodeMirror, { ViewUpdate } from '@uiw/react-codemirror';
+import ReactCodeMirror from '@uiw/react-codemirror';
 import { Select, Space } from 'antd';
 import { useCallback } from 'react';
 import Container from '../../Layout/Container';
-import { useActionsStore, useStore } from '../../store';
+import { useActionsStore, useStore } from '../../hooks';
 
 function PaneEditor() {
     return (
@@ -21,9 +21,12 @@ function Editor() {
     const { theme, code } = useStore();
     const { onChangeCode } = useActionsStore();
 
-    const onChange = useCallback((value: string, _: ViewUpdate) => {
-        onChangeCode(value);
-    }, []);
+    const onChange = useCallback(
+        (value: string) => {
+            onChangeCode(value);
+        },
+        [onChangeCode]
+    );
 
     return (
         <ReactCodeMirror

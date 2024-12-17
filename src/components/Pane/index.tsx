@@ -2,8 +2,8 @@ import { Select, Space } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import styled from 'styled-components';
 import logo from '../../assets/images/logo.png';
-import { useActionsStore } from '../../store';
 import { Extension } from '@uiw/react-codemirror';
+import { useActionsStore } from '../../hooks';
 
 const PaneContainer = styled(Header)`
     display: flex;

@@ -1,41 +1,13 @@
 import { Extension } from '@uiw/react-codemirror';
-import {
-    createContext,
-    PropsWithChildren,
-    useCallback,
-    useContext,
-    useMemo,
-    useState,
-} from 'react';
-
-type TypeStore = {
-    state: {
-        theme: Extension | 'light' | 'dark' | 'none' | undefined;
-        code: string;
-    };
-    actions: {
-        onChangeTheme: (
-            theme: Extension | 'light' | 'dark' | 'none' | undefined
-        ) => void;
-        onChangeCode: (value: string) => void;
-    };
-};
-const defaultStore: TypeStore = {
-    state: {
-        theme: 'light',
-        code: '// Enter your code...',
-    },
-    actions: {
-        onChangeTheme: () => null,
-        onChangeCode: () => null,
-    },
-};
-const StoreContext = createContext<TypeStore>(defaultStore);
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { defaultStore } from '../constant';
+import { TypeStore } from '../types';
+import StoreContext from '../context/StoreContext';
 
 type TypeStoreProvider = {
-    config?: {};
+    config?: unknown;
 };
-function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
+export function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
     const { children } = props;
     const [state, setState] = useState<TypeStore['state']>(defaultStore.state);
 
@@ -50,30 +22,23 @@ function StoreProvider(props: PropsWithChildren<TypeStoreProvider>) {
         setState((prev) => ({ ...prev, code }));
     }, []);
 
+    const hanldeUpdateResult = useCallback((result: string) => {
+        setState((prev) => ({ ...prev, result }));
+    }, []);
+
     const result = useMemo<TypeStore>(
         () => ({
             state,
             actions: {
                 onChangeTheme: handleChangeTheme,
                 onChangeCode: handleChangeCode,
+                onUpdateResult: hanldeUpdateResult,
             },
         }),
-        [state]
+        [handleChangeCode, handleChangeTheme, hanldeUpdateResult, state]
     );
 
     return (
         <StoreContext.Provider value={result}>{children}</StoreContext.Provider>
     );
 }
-
-function useStore() {
-    const result = useContext(StoreContext);
-    return result.state;
-}
-
-function useActionsStore() {
-    const result = useContext(StoreContext);
-    return result.actions;
-}
-
-export { useStore, useActionsStore, StoreProvider };
