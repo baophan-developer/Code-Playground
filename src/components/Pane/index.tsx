@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import logo from '../../assets/images/logo.png';
 import { Extension } from '@uiw/react-codemirror';
 import { useActionsStore } from '../../hooks';
+import { useRef } from 'react';
 
 const PaneContainer = styled(Header)`
     display: flex;
@@ -24,13 +25,19 @@ const Logo = styled('img')`
  */
 export default function Pane() {
     const { onChangeTheme } = useActionsStore();
+    const themeStorage = useRef(localStorage.getItem('theme'));
+
     return (
         <PaneContainer>
             <Logo src={logo} alt="Code playground" />
             <Space>
                 <Select
                     placeholder="Theme"
-                    defaultValue="light"
+                    defaultValue={
+                        themeStorage.current
+                            ? JSON.parse(themeStorage.current)
+                            : 'light'
+                    }
                     options={[
                         {
                             label: 'Light',
