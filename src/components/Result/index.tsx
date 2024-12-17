@@ -8,26 +8,29 @@ function Pane() {
     const { code } = useStore();
     const { onUpdateResult } = useActionsStore();
 
-    const runCode = useCallback((code: string) => {
-        let output = '';
-        const originalConsoleLog = console.log;
-        console.log = function (message: string) {
-            output +=
-                typeof message === 'object'
-                    ? JSON.stringify(message) + '\n'
-                    : message + '\n';
-            originalConsoleLog.apply(console, arguments as any);
-        };
-        try {
-            eval(code);
-        } catch (error) {
-            console.error(error);
-            output += error + '\n';
-        }
-        // Restore original console.log
-        console.log = originalConsoleLog;
-        onUpdateResult(output);
-    }, []);
+    const runCode = useCallback(
+        (code: string) => {
+            let output = '';
+            const originalConsoleLog = console.log;
+            console.log = function (message: string) {
+                output +=
+                    typeof message === 'object'
+                        ? JSON.stringify(message) + '\n'
+                        : message + '\n';
+                originalConsoleLog.apply(console, arguments as any);
+            };
+            try {
+                eval(code);
+            } catch (error) {
+                console.error(error);
+                output += error + '\n';
+            }
+            // Restore original console.log
+            console.log = originalConsoleLog;
+            onUpdateResult(output);
+        },
+        [onUpdateResult]
+    );
 
     return (
         <Space>
