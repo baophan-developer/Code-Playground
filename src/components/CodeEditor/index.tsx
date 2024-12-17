@@ -34,7 +34,6 @@ function Editor() {
             theme={theme}
             extensions={[javascript({ jsx: true })]}
             onChange={onChange}
-            height="500px"
         />
     );
 }

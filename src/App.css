@@ -4,3 +4,20 @@
     box-sizing: border-box;
     border-radius: 0 !important;
 }
+
+.ͼ1.cm-focused {
+    outline: unset;
+}
+
+.cm-theme-light,
+.cm-theme-dark {
+    display: flex;
+    height: calc(100vh - 126px);
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.cm-editor {
+    flex: 1;
+    height: 100%;
+}

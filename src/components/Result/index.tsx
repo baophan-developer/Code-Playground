@@ -42,9 +42,7 @@ function Pane() {
 function ShowResult() {
     const { result, theme } = useStore();
 
-    return (
-        <ReactCodeMirror value={result} theme={theme} height="500px" readOnly />
-    );
+    return <ReactCodeMirror value={result} theme={theme} readOnly />;
 }
 
 /**
